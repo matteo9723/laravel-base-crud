@@ -6,7 +6,7 @@ use App\Comic;
 
 use Illuminate\Http\Request;
 
-use Illuminate\Http\Str;
+use Illuminate\Support\Str;
 
 
 

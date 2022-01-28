@@ -28,7 +28,15 @@
                         <input type="number" class="form-control" name="series" id="series" >
                     </div>
                     <div class="mb-3">
-                        <label for="description" class="form-label">Descizione</label>
+                        <label for="price" class="form-label">prezzo</label>
+                        <input type="number" class="form-control" name="price" id="price" >
+                    </div>
+                    <div class="mb-3">
+                        <label for="sale_date" class="form-label">sale_date</label>
+                        <input type="number" class="form-control" name="sale_date" id="sale_date" >
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Descrizione</label>
                         <textarea type="number" class="form-control" name="description" id="description" ></textarea>
                     </div>
 
