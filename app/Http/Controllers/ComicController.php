@@ -6,6 +6,10 @@ use App\Comic;
 
 use Illuminate\Http\Request;
 
+use Illuminate\Http\Str;
+
+
+
 class ComicController extends Controller
 {
     /**
@@ -16,7 +20,7 @@ class ComicController extends Controller
     public function index()
     {
         $comics = Comic::paginate(5);
-        return view('comics.home',compact('comics'));
+        return view('comics.index',compact('comics'));
     }
 
     /**
@@ -26,7 +30,7 @@ class ComicController extends Controller
      */
     public function create()
     {
-        //
+        return view('comics.create');
     }
 
     /**
@@ -37,7 +41,18 @@ class ComicController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->all();
+        $new_comic = new Comic();
+
+        $data['slug'] = $this->createSlug($data['title']);
+
+        $new_comic->fill($data);
+        $new_comic->save();
+
+        return redirect()->route('comics.show' , $new_comic);
+
+
+
     }
 
     /**
@@ -49,7 +64,10 @@ class ComicController extends Controller
     public function show($id)
     {
         $comic = Comic::find($id);
-        return view('comics.show',compact('comic'));
+        if($comic){
+            return view('comics.show',compact('comic'));
+        }
+        abort(404, 'fumetto non presente nel db');
     }
 
     /**
@@ -60,8 +78,12 @@ class ComicController extends Controller
      */
     public function edit($id)
     {
-        //
-    }
+        $comic = Comic::find($id);
+        if($comic){
+            return view('comics.edit',compact('comic'));
+        }
+        abort(404, 'fumetto non presente nel db');
+     }
 
     /**
      * Update the specified resource in storage.
@@ -70,9 +92,14 @@ class ComicController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request,Comic $comic)
     {
-        //
+        $data = $request->all();
+
+        $data['slug'] = $this->createSlug($data['title']);
+        $comic->update($data);
+
+        return redirect()->route('comics.show', $comic);
     }
 
     /**
@@ -81,8 +108,12 @@ class ComicController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Comic $comic)
     {
-        //
+        $comic->delete();
+        return redirect()->route('comics.index');
+    }
+    private function createSlug($string){
+        return Str::slug($string,'-');
     }
 }

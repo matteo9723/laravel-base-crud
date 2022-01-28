@@ -14,6 +14,9 @@
             <li class="nav-item">
               <a class="nav-link @if (Route::currentRouteName() === 'comics.index') 'active' @endif" href="{{ route('comics.index') }}">Fumetti</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link @if (Route::currentRouteName() === 'comics.create') 'active' @endif" href="{{ route('comics.create') }}">inserisci un nuovo fumetto</a>
+            </li>
             
 
 
