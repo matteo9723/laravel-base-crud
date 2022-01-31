@@ -19,7 +19,7 @@ class ComicController extends Controller
      */
     public function index()
     {
-        $comics = Comic::paginate(5);
+        $comics = Comic::orderBy('id','desc')->paginate(5);
         return view('comics.index',compact('comics'));
     }
 
@@ -41,18 +41,13 @@ class ComicController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate($this->validationData(),$this->validationErrors());
         $data = $request->all();
         $new_comic = new Comic();
-
         $data['slug'] = $this->createSlug($data['title']);
-
         $new_comic->fill($data);
         $new_comic->save();
-
-        return redirect()->route('comics.show' , $new_comic);
-
-
-
+        return redirect()->route('comics.show', $new_comic);
     }
 
     /**
@@ -94,6 +89,8 @@ class ComicController extends Controller
      */
     public function update(Request $request,Comic $comic)
     {
+
+        $request->validate($this->validationData(),$this->validationErrors());
         $data = $request->all();
 
         $data['slug'] = $this->createSlug($data['title']);
@@ -111,9 +108,33 @@ class ComicController extends Controller
     public function destroy(Comic $comic)
     {
         $comic->delete();
-        return redirect()->route('comics.index');
+        return redirect()->route('comics.index')->with('deleted',"il fumetto $comic->title è stato eliminato");
     }
     private function createSlug($string){
         return Str::slug($string,'-');
+    }
+
+    private function validationData(){
+        return[
+            'title' => 'required|max:50|min:2',
+            'type' => 'required|max:50|min:2',
+            'thumb' => 'required|max:255',
+            'price' => 'required|numeric|min:1'
+        ];
+    }
+    private function validationErrors(){
+        return[
+           'title.required' => 'il titolo è un campo obbligatorio',
+           'title.max' => 'il numero di caratteri per il nome del fumetto consentito è di :max caratteri',
+           'title.min' => 'il numero di caratteri per il nome del fumetto consentito è di :min caratteri',
+           'type.required' => 'il tipo di fumetto è un campo obbligatorio',
+           'type.max' => 'Il numero di caratteri per il tipo consentito è di :max caratteri',
+           'type.min' => 'Il numero minimo di caratteri per il tipo è di :min caratteri',
+           'price.numeric' => 'Il prezzo deve essere un numero',
+           'price.required' => 'Il prezzo è obbligatorio',
+           'price.min' => 'Il prezzo deve essere di minimo 1 minuto',
+           'thumb.required' => "L'immagine è un campo obbligatorio",
+           'thumb.max' => "L'url dell'immagine non può contenere più di 255 caratteri",
+        ];
     }
 }

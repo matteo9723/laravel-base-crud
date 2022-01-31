@@ -24,7 +24,7 @@
                   <td><a href="{{ route('comics.edit', $comic) }}" class="btn btn-primary">EDIT</a></td>
 
                   <td>
-                    <form action="{{ route('comics.destroy', $comic) }}" method="POST">
+                    <form  action="{{ route('comics.destroy', $comic) }}" method="POST">
                       @csrf
                       @method('DELETE')
 
